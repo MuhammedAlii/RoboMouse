@@ -18,6 +18,7 @@
   "build": {
     "appId": "com.robo.mouse",
     "productName": "roboMouse",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "asar": true,
     "asarUnpack": [
       "node_modules/@nut-tree-fork/**/*"
@@ -70,6 +71,9 @@
         }
       ],
       "icon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable-${arch}.exe"
     },
     "linux": {
       "target": [

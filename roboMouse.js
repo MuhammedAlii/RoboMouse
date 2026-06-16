@@ -67,11 +67,18 @@ function stopTrayTimer() {
   botStartedAt = null;
 }
 
+function removeDefaultApplicationMenu() {
+  if (process.platform !== "darwin") {
+    Menu.setApplicationMenu(null);
+  }
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 400,
     height: 570,
     resizable: false,
+    autoHideMenuBar: true,
     backgroundColor: "#080c14",
     show: false,
     webPreferences: {
@@ -297,6 +304,7 @@ function applySettings(distancePx, intervalSeconds) {
 }
 
 app.whenReady().then(() => {
+  removeDefaultApplicationMenu();
   createWindow();
   createTray();
 });

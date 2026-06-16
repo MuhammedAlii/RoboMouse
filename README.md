@@ -15,13 +15,16 @@ roboMouse is a lightweight desktop utility built with Electron and [nut-js](http
 
 ## 📦 Download
 
-Pre-built binaries are published on the [**Releases**](https://github.com/MuhammedAlii/roboMouse/releases) page.
+Pre-built binaries are on the [**Releases**](https://github.com/MuhammedAlii/RoboMouse/releases) page.
+
+> ⚠️ **Do not download "Source code (zip)"** — that is the GitHub repo source, not the app.  
+> Scroll to **Assets** and download the platform file below.
 
 | Platform | File | Notes |
 |----------|------|-------|
 | **macOS** (Apple Silicon) | `roboMouse-1.0.2-arm64.dmg` | Drag to Applications |
-| **Windows** | `roboMouse 1.0.2.exe` | Portable, no installer |
-| **Windows** | `roboMouse-1.0.2-win.zip` | Unpacked folder |
+| **Windows** | `roboMouse-1.0.2-portable-x64.exe` | Portable — double-click to run |
+| **Windows** | `roboMouse-1.0.2-win-x64.zip` | Extract folder → run `roboMouse.exe` |
 | **Linux** | `roboMouse-1.0.2.AppImage` | `chmod +x` then run |
 | **Linux** | `roboMouse_1.0.2_amd64.deb` | `sudo dpkg -i …` |
 
@@ -61,7 +64,7 @@ Tray presets *(macOS)*: distance **5 / 10 / 15 / 20 px**, interval **5 / 10 / 30
 
 ### 🍎 macOS
 
-1. Download the `.dmg` from [Releases](https://github.com/MuhammedAlii/roboMouse/releases).
+1. Download the `.dmg` from [Releases](https://github.com/MuhammedAlii/RoboMouse/releases).
 2. Move **roboMouse** to **Applications**.
 3. Grant **Accessibility** permission:  
    **System Settings → Privacy & Security → Accessibility → roboMouse**
@@ -71,11 +74,12 @@ If macOS blocks the app (unsigned build): **Right-click → Open**.
 
 ### 🪟 Windows
 
-1. Download `roboMouse 1.0.2.exe` or the `.zip` archive.
-2. Run `roboMouse.exe`.
-3. Adjust distance and interval, then press **Start**.
+1. Open [Releases](https://github.com/MuhammedAlii/RoboMouse/releases) → **Assets**.
+2. Download **`roboMouse-1.0.2-portable-x64.exe`** *(recommended)* **or** **`roboMouse-1.0.2-win-x64.zip`**.
+3. **Portable:** double-click the `.exe`.
+4. **Zip:** extract the archive → open the folder → run **`roboMouse.exe`**.
 
-Windows SmartScreen may warn on unsigned builds — choose **More info → Run anyway** if you trust the source.
+Windows SmartScreen may warn on unsigned builds — **More info → Run anyway**.
 
 ### 🐧 Linux
 
@@ -114,7 +118,7 @@ After an update or reinstall, toggle the permission off and on in System Setting
 ### Setup
 
 ```bash
-git clone https://github.com/MuhammedAlii/roboMouse.git
+git clone https://github.com/MuhammedAlii/RoboMouse.git
 cd roboMouse
 npm install
 npm start
@@ -161,7 +165,7 @@ roboMouse/
 
 Bug reports and pull requests are welcome.
 
-1. Open an [issue](https://github.com/MuhammedAlii/roboMouse/issues) for bugs or feature ideas.
+1. Open an [issue](https://github.com/MuhammedAlii/RoboMouse/issues) for bugs or feature ideas.
 2. Fork the repo, branch from `main`, and submit a PR.
 3. Test locally with `npm start` before submitting.
 
@@ -180,6 +184,6 @@ ISC — see [`package.json`](package.json) for details.
 | 👤 **Developer** | Muhammed Ali |
 | 🔗 **GitHub** | [github.com/MuhammedAlii](https://github.com/MuhammedAlii) |
 | 📧 **Email** | [muhammedalisahin41@gmail.com](mailto:muhammedalisahin41@gmail.com) |
-| 🐛 **Bug reports** | [GitHub Issues](https://github.com/MuhammedAlii/roboMouse/issues) |
+| 🐛 **Bug reports** | [GitHub Issues](https://github.com/MuhammedAlii/RoboMouse/issues) |
 
 💼 For job or project proposals, feel free to reach out via GitHub DM or email.
