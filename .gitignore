@@ -6,6 +6,9 @@ dist/
 out/
 *.dmg
 *.blockmap
+*.zip
+*.AppImage
+*.deb
 *.exe
 *.app/
 

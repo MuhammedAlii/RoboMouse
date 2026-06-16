@@ -1,132 +1,185 @@
-# roboMouse
+# 🖱️ roboMouse
 
-**Bilgisayarınızı aktif tutmak için fareyi otomatik hareket ettiren hafif bir macOS uygulaması.**
+**Keep your computer awake with gentle, configurable mouse automation.**
 
-Electron + [nut-js](https://github.com/nut-tree/nut.js) ile geliştirilmiştir. Menü çubuğundan veya panelden kontrol edilir; döngü aralığı ve hareket mesafesi ayarlanabilir.
+roboMouse is a lightweight desktop utility built with Electron and [nut-js](https://github.com/nut-tree/nut.js). It moves the cursor on a timed loop so your system stays active — useful during long downloads, builds, or remote sessions.
 
-> **English:** A lightweight macOS utility that keeps your computer awake by moving the mouse on a loop — right, click, left, repeat.
-
----
-
-## Özellikler
-
-- **Otomatik fare döngüsü** — Belirlediğiniz mesafe kadar sağa gider, sol tıklar, aynı mesafe kadar sola döner
-- **Ayarlanabilir parametreler** — Hareket mesafesi (px) ve döngü aralığı (sn)
-- **macOS menü çubuğu (Tray)** — Start/Stop, mesafe & aralık preset'leri, panel açma, çıkış
-- **Aktif durum göstergesi** — Tray ikonunda yeşil rozet; tooltip'te çalışma süresi
-- **Erişilebilirlik kontrolü** — İzin yoksa Start devre dışı; ayarlara tek tıkla yönlendirme
-- **Çoklu dil** — Türkçe, English, Deutsch, Русский
-- **Yardım paneli** — Nasıl kullanılır animasyonu ve isteğe bağlı sesli anlatım
-- **Arka planda çalışma** — Pencere kapatıldığında uygulama tray'de kalır (macOS)
+| | |
+|---|---|
+| **Version** | 1.0.2 |
+| **License** | ISC |
+| **Platforms** | macOS 12+, Windows x64, Linux x64 |
+| **Languages** | Türkçe · English · Deutsch · Русский |
 
 ---
 
-## Nasıl çalışır?
+## 📦 Download
+
+Pre-built binaries are published on the [**Releases**](https://github.com/MuhammedAlii/roboMouse/releases) page.
+
+| Platform | File | Notes |
+|----------|------|-------|
+| **macOS** (Apple Silicon) | `roboMouse-1.0.2-arm64.dmg` | Drag to Applications |
+| **Windows** | `roboMouse 1.0.2.exe` | Portable, no installer |
+| **Windows** | `roboMouse-1.0.2-win.zip` | Unpacked folder |
+| **Linux** | `roboMouse-1.0.2.AppImage` | `chmod +x` then run |
+| **Linux** | `roboMouse_1.0.2_amd64.deb` | `sudo dpkg -i …` |
+
+> **macOS only:** menu bar tray icon, context menu, and active-state badge.  
+> Windows and Linux builds use the in-app control panel.
+
+---
+
+## ✨ Features
+
+- **Automated loop** — move right → wait → left click → move back → repeat
+- **Configurable settings** — movement distance (px) and loop interval (seconds)
+- **macOS menu bar tray** — start/stop, distance & interval presets, open panel, quit
+- **Active indicator** — green badge on the tray icon while running
+- **Permission-aware UX** — start is disabled until mouse control is verified (macOS Accessibility)
+- **In-app help** — animated walkthrough with optional voice guidance
+- **Background operation** — closing the window keeps the app running in the tray *(macOS)*
+
+---
+
+## 🔄 How it works
 
 ```
-Başlat → bekle (aralık) → sağa hareket → bekle → sol tık → sola dön → tekrar
+Start → wait (interval) → move right → wait → left click → move left → repeat
 ```
 
-| Ayar | Açıklama | Varsayılan |
-|------|----------|------------|
-| Mouse mesafesi | Her adımda yatay hareket (px) | 5 px |
-| Döngü aralığı | Adımlar arası bekleme süresi | 5 sn |
+| Setting | Description | Default |
+|---------|-------------|---------|
+| Mouse distance | Horizontal movement per step | 5 px |
+| Loop interval | Pause between steps | 5 s |
 
-Tray preset'leri: mesafe **5 / 10 / 15 / 20 px**, aralık **5 / 10 / 30 sn**.
-
----
-
-## Gereksinimler
-
-| Ortam | Minimum |
-|-------|---------|
-| macOS | 12.0 (Monterey) ve üzeri |
-| Node.js | 18+ (geliştirme için) |
-| ImageMagick | Tray ikonları üretmek için (`magick` komutu) |
-
-> Tray menüsü ve menü çubuğu ikonu yalnızca **macOS**'ta kullanılabilir. Windows hedefi `package.json` içinde tanımlıdır; ana geliştirme macOS odaklıdır.
+Tray presets *(macOS)*: distance **5 / 10 / 15 / 20 px**, interval **5 / 10 / 30 s**.
 
 ---
 
-## Kurulum
+## 🚀 Quick start
 
-### DMG ile (son kullanıcı)
+### 🍎 macOS
 
-1. `dist/roboMouse-1.0.2-arm64.dmg` dosyasını açın *(build sonrası)*.
-2. Uygulamayı **Applications** klasörüne sürükleyin.
-3. İlk açılışta **Sistem Ayarları → Gizlilik ve Güvenlik → Erişilebilirlik** bölümünden roboMouse'a izin verin.
-4. Ad-hoc imzalı build'lerde Gatekeeper uyarısı çıkabilir — **Sağ tık → Aç** ile geçebilirsiniz.
+1. Download the `.dmg` from [Releases](https://github.com/MuhammedAlii/roboMouse/releases).
+2. Move **roboMouse** to **Applications**.
+3. Grant **Accessibility** permission:  
+   **System Settings → Privacy & Security → Accessibility → roboMouse**
+4. Launch the app and press **Start**.
 
-### Kaynak koddan
+If macOS blocks the app (unsigned build): **Right-click → Open**.
+
+### 🪟 Windows
+
+1. Download `roboMouse 1.0.2.exe` or the `.zip` archive.
+2. Run `roboMouse.exe`.
+3. Adjust distance and interval, then press **Start**.
+
+Windows SmartScreen may warn on unsigned builds — choose **More info → Run anyway** if you trust the source.
+
+### 🐧 Linux
+
+**AppImage**
 
 ```bash
-git clone https://github.com/<kullanici>/roboMouse.git
+chmod +x roboMouse-1.0.2.AppImage
+./roboMouse-1.0.2.AppImage
+```
+
+**Debian / Ubuntu**
+
+```bash
+sudo dpkg -i roboMouse_1.0.2_amd64.deb
+```
+
+Depending on your desktop environment, additional input permissions may be required.
+
+---
+
+## 🔐 macOS Accessibility
+
+roboMouse needs **Accessibility** permission to control the mouse. The start button stays disabled until access is confirmed.
+
+After an update or reinstall, toggle the permission off and on in System Settings, then restart the app.
+
+---
+
+## 🛠️ Development
+
+### Requirements
+
+- Node.js 18+
+- ImageMagick (`magick`) — only for regenerating tray icons
+
+### Setup
+
+```bash
+git clone https://github.com/MuhammedAlii/roboMouse.git
 cd roboMouse
 npm install
 npm start
 ```
 
----
+### Build commands
 
-## Geliştirme
-
-### Komutlar
-
-| Komut | Açıklama |
-|-------|----------|
-| `npm start` | Geliştirme modunda Electron uygulamasını çalıştırır |
-| `npm run generate:tray-icons` | Menü çubuğu tray ikonlarını üretir (ImageMagick gerekir) |
-| `npm run build:mac` | İmzalı macOS DMG build *(Apple Developer sertifikası gerekir)* |
-| `npm run build:mac:local` | Yerel ad-hoc imzalı DMG build |
-
-### macOS DMG oluşturma
-
-```bash
-npm run generate:tray-icons   # tray-icon-idle.png & tray-icon-active.png
-npm run build:mac:local       # → dist/roboMouse-1.0.2-arm64.dmg
-```
-
-### Erişilebilirlik izni
-
-Uygulama fareyi kontrol edebilmek için macOS **Erişilebilirlik** iznine ihtiyaç duyar. İzin verilmeden Start butonu pasif kalır. Güncelleme veya yeniden kurulum sonrası izni kapatıp tekrar açmanız gerekebilir.
+| Command | Output |
+|---------|--------|
+| `npm run build:mac:local` | `dist/roboMouse-1.0.2-arm64.dmg` |
+| `npm run build:win:local` | Portable `.exe` + `.zip` |
+| `npm run build:linux:local` | AppImage + `.deb` |
+| `npm run build:all:local` | All platforms |
+| `npm run generate:tray-icons` | macOS tray icons |
+| `npm run generate:icons` | Windows `.ico` |
 
 ---
 
-## Proje yapısı
+## 📁 Project structure
 
 ```
 roboMouse/
-├── roboMouse.js          # Electron main process, bot & tray
-├── index.html            # UI paneli
-├── preload.js            # IPC köprüsü
-├── i18n.js               # Panel çevirileri (TR / EN / DE / RU)
-├── tray-i18n.js          # Tray menü çevirileri
-├── icon.png              # Uygulama logosu
-├── tray-icon-*.png       # Menü çubuğu ikonları (üretilmiş)
-├── build/
-│   ├── icon.icns         # macOS uygulama ikonu
-│   └── entitlements.*.plist
-└── scripts/
-    └── generate-tray-icons.sh
+├── roboMouse.js       # Main process, automation & tray
+├── index.html         # UI
+├── preload.js         # IPC bridge
+├── i18n.js            # UI translations
+├── tray-i18n.js       # Tray menu translations
+├── build/             # Icons & macOS entitlements
+└── scripts/           # Asset generation
 ```
 
 ---
 
-## Teknolojiler
+## ⚙️ Tech stack
 
 - [Electron](https://www.electronjs.org/) 40
-- [@nut-tree-fork/nut-js](https://www.npmjs.com/package/@nut-tree-fork/nut-js) — fare otomasyonu
-- [@nut-tree-fork/node-mac-permissions](https://www.npmjs.com/package/@nut-tree-fork/node-mac-permissions) — macOS izin API'si
-- [electron-builder](https://www.electron.build/) — paketleme
+- [@nut-tree-fork/nut-js](https://www.npmjs.com/package/@nut-tree-fork/nut-js)
+- [@nut-tree-fork/node-mac-permissions](https://www.npmjs.com/package/@nut-tree-fork/node-mac-permissions)
+- [electron-builder](https://www.electron.build/)
 
 ---
 
-## Lisans
+## 🤝 Contributing
 
-ISC — ayrıntılar için `package.json`.
+Bug reports and pull requests are welcome.
+
+1. Open an [issue](https://github.com/MuhammedAlii/roboMouse/issues) for bugs or feature ideas.
+2. Fork the repo, branch from `main`, and submit a PR.
+3. Test locally with `npm start` before submitting.
 
 ---
 
-## Katkı
+## 📄 License
 
-Issue açabilir veya pull request gönderebilirsiniz. Geliştirme öncesi `npm start` ile test etmeniz yeterli.
+ISC — see [`package.json`](package.json) for details.
+
+---
+
+## 📬 Contact
+
+| | |
+|---|---|
+| 👤 **Developer** | Muhammed Ali |
+| 🔗 **GitHub** | [github.com/MuhammedAlii](https://github.com/MuhammedAlii) |
+| 📧 **Email** | [muhammedalisahin41@gmail.com](mailto:muhammedalisahin41@gmail.com) |
+| 🐛 **Bug reports** | [GitHub Issues](https://github.com/MuhammedAlii/roboMouse/issues) |
+
+💼 For job or project proposals, feel free to reach out via GitHub DM or email.

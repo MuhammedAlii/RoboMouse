@@ -9,7 +9,11 @@
     "generate:tray-icons": "bash scripts/generate-tray-icons.sh",
     "postinstall": "electron-builder install-app-deps",
     "build:mac": "electron-builder --mac dmg",
-    "build:mac:local": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg && codesign --force --deep --sign - dist/mac-arm64/roboMouse.app"
+    "build:mac:local": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg && codesign --force --deep --sign - dist/mac-arm64/roboMouse.app",
+    "generate:icons": "magick icon.png -define icon:auto-resize=256,128,64,48,32,16 build/icon.ico",
+    "build:win:local": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win portable zip --x64",
+    "build:linux:local": "electron-builder --linux AppImage deb --x64",
+    "build:all:local": "npm run generate:tray-icons && npm run generate:icons && npm run build:mac:local && npm run build:win:local && npm run build:linux:local"
   },
   "build": {
     "appId": "com.robo.mouse",
@@ -45,8 +49,48 @@
       }
     },
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.png",
+      "category": "Utility",
+      "maintainer": "roboMouse",
+      "synopsis": "Keeps your computer awake by moving the mouse automatically",
+      "description": "roboMouse bilgisayarinizi aktif tutmak icin fareyi otomatik hareket ettirir."
     }
   },
   "description": "Basit mouse hareket ve tiklama otomasyonu (Electron + nut-js).",
