@@ -1,0 +1,69 @@
+{
+  "name": "roboMouse",
+  "version": "1.0.2",
+  "main": "roboMouse.js",
+  "bin": "roboMouse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "generate:tray-icons": "bash scripts/generate-tray-icons.sh",
+    "postinstall": "electron-builder install-app-deps",
+    "build:mac": "electron-builder --mac dmg",
+    "build:mac:local": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg && codesign --force --deep --sign - dist/mac-arm64/roboMouse.app"
+  },
+  "build": {
+    "appId": "com.robo.mouse",
+    "productName": "roboMouse",
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/@nut-tree-fork/**/*"
+    ],
+    "npmRebuild": true,
+    "files": [
+      "**/*",
+      "tray-icon-active.png",
+      "tray-icon-idle.png",
+      "!dist/**",
+      "!icon.iconset/**",
+      "!*.dmg",
+      "!roboMouse-linux",
+      "!roboMouse-macos",
+      "!roboMouse-win.exe",
+      "!RoboMouse.app/**"
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities",
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+      "extendInfo": {
+        "LSMinimumSystemVersion": "12.0",
+        "NSAppleEventsUsageDescription": "RoboMouse fare hareketlerini otomatiklestirmek icin sistem erisimi gerektirir.",
+        "NSAccessibilityUsageDescription": "RoboMouse bilgisayarinizi aktif tutmak icin fareyi otomatik hareket ettirir."
+      }
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    }
+  },
+  "description": "Basit mouse hareket ve tiklama otomasyonu (Electron + nut-js).",
+  "keywords": [
+    "electron",
+    "mouse",
+    "automation",
+    "nut-js"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nut-tree-fork/node-mac-permissions": "2.2.1",
+    "@nut-tree-fork/nut-js": "^4.2.6"
+  },
+  "devDependencies": {
+    "electron": "^40.4.1",
+    "electron-builder": "^26.7.0"
+  }
+}

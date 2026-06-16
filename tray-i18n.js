@@ -1,0 +1,62 @@
+module.exports = {
+  tr: {
+    status: "Durum",
+    active: "Aktif",
+    inactive: "Pasif",
+    start: "Başlat",
+    stop: "Durdur",
+    distance: "Mouse mesafesi",
+    interval: "Döngü aralığı",
+    openPanel: "Paneli Aç",
+    quit: "Çıkış",
+    unitPx: "px",
+    unitSec: "sn",
+    tooltip: "RoboMouse",
+    tooltipActive: "RoboMouse — Aktif"
+  },
+  en: {
+    status: "Status",
+    active: "Active",
+    inactive: "Idle",
+    start: "Start",
+    stop: "Stop",
+    distance: "Mouse distance",
+    interval: "Loop interval",
+    openPanel: "Open Panel",
+    quit: "Quit",
+    unitPx: "px",
+    unitSec: "sec",
+    tooltip: "RoboMouse",
+    tooltipActive: "RoboMouse — Active"
+  },
+  de: {
+    status: "Status",
+    active: "Aktiv",
+    inactive: "Inaktiv",
+    start: "Start",
+    stop: "Stopp",
+    distance: "Mausbewegung",
+    interval: "Schleifenintervall",
+    openPanel: "Panel öffnen",
+    quit: "Beenden",
+    unitPx: "px",
+    unitSec: "Sek",
+    tooltip: "RoboMouse",
+    tooltipActive: "RoboMouse — Aktiv"
+  },
+  ru: {
+    status: "Статус",
+    active: "Активно",
+    inactive: "Неактивно",
+    start: "Старт",
+    stop: "Стоп",
+    distance: "Расстояние мыши",
+    interval: "Интервал цикла",
+    openPanel: "Открыть панель",
+    quit: "Выход",
+    unitPx: "px",
+    unitSec: "сек",
+    tooltip: "RoboMouse",
+    tooltipActive: "RoboMouse — Активно"
+  }
+};

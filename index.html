@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>RoboMouse</title>
+  <style>
+    :root {
+      --bg-1: #080c14;
+      --bg-2: #121f3d;
+      --navy: #1a2d5a;
+      --card: rgba(18, 31, 61, 0.88);
+      --card-border: rgba(77, 212, 255, 0.12);
+      --text: #f4f8ff;
+      --muted: #8fa3c7;
+      --cyan: #4dd4ff;
+      --cyan-dim: rgba(77, 212, 255, 0.15);
+      --gold: #f5c542;
+      --gold-dim: rgba(245, 197, 66, 0.15);
+      --accent: var(--cyan);
+      --accent-2: var(--gold);
+      --success: var(--cyan);
+      --danger: #ff6b6b;
+      --warning-bg: var(--gold-dim);
+      --warning-border: rgba(245, 197, 66, 0.4);
+      --warning-text: #ffe082;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(77, 212, 255, 0.18), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 100% 100%, rgba(245, 197, 66, 0.1), transparent 50%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2));
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 12px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 340px;
+      height: 100%;
+      max-height: 100%;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .app-header {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 22px 20px 14px;
+      border-bottom: 1px solid rgba(77, 212, 255, 0.08);
+    }
+
+    .app-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      padding: 14px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .app-scroll.scrollable {
+      overflow-y: auto;
+      padding: 14px 10px 18px 20px;
+      margin-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(77, 212, 255, 0.38) rgba(255, 255, 255, 0.05);
+    }
+
+    .app-scroll.scrollable::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .app-scroll.scrollable::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 999px;
+      margin: 8px 0;
+      box-shadow: inset 0 0 0 1px rgba(77, 212, 255, 0.07);
+    }
+
+    .app-scroll.scrollable::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(77, 212, 255, 0.55), rgba(77, 212, 255, 0.22));
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(77, 212, 255, 0.12);
+    }
+
+    .app-scroll.scrollable::-webkit-scrollbar-thumb:hover {
+      background: rgba(77, 212, 255, 0.62);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .help-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-top: 0;
+      border: 1px solid rgba(77, 212, 255, 0.18);
+      background: rgba(77, 212, 255, 0.06);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 5px 10px 5px 6px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+
+    .help-trigger:hover {
+      color: var(--cyan);
+      border-color: rgba(77, 212, 255, 0.35);
+      background: rgba(77, 212, 255, 0.1);
+    }
+
+    .help-trigger:active {
+      transform: scale(0.97);
+    }
+
+    .help-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(77, 212, 255, 0.14);
+      color: var(--cyan);
+      font-size: 0.62rem;
+      font-weight: 800;
+      font-style: italic;
+      font-family: Georgia, "Times New Roman", serif;
+      display: grid;
+      place-items: center;
+      line-height: 1;
+    }
+
+    .help-label {
+      white-space: nowrap;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid rgba(77, 212, 255, 0.25);
+      box-shadow:
+        0 0 18px rgba(77, 212, 255, 0.2),
+        0 0 6px rgba(245, 197, 66, 0.12);
+    }
+
+    .brand-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .brand-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      background: linear-gradient(90deg, var(--text) 0%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand-text p {
+      margin: 3px 0 0;
+      font-size: 0.66rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .permission-banner {
+      display: none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      line-height: 1.45;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .permission-banner.warning,
+    .permission-banner.loading {
+      display: block;
+    }
+
+    .permission-banner.loading {
+      display: flex;
+      align-items: center;
+      background: rgba(77, 212, 255, 0.06);
+      border-color: rgba(77, 212, 255, 0.18);
+      color: var(--muted);
+    }
+
+    .permission-loading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .permission-warning[hidden],
+    .permission-loading[hidden] {
+      display: none !important;
+    }
+
+    .permission-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(77, 212, 255, 0.2);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: permissionSpin 0.75s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes permissionSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .permission-banner button {
+      margin-top: 8px;
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--warning-border);
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--warning-text);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .permission-banner button:hover {
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .status-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px 5px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.3s ease;
+    }
+
+    .status-badge.active {
+      border-color: rgba(52, 211, 153, 0.35);
+      background: rgba(52, 211, 153, 0.08);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.12);
+    }
+
+    .status-badge.active .status-text {
+      color: #34d399;
+      animation: activeTextBlink 1.2s ease-in-out infinite;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all 0.3s ease;
+    }
+
+    .status-badge.active .status-dot {
+      background: #34d399;
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.8);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    .status-timer {
+      margin-top: 10px;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .status-timer-label {
+      margin-top: 4px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .field-header label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .field-unit-badge {
+      flex-shrink: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(77, 212, 255, 0.85);
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(77, 212, 255, 0.08);
+      border: 1px solid rgba(77, 212, 255, 0.14);
+    }
+
+    .field-input-wrap {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .field-input-wrap:hover {
+      background: rgba(0, 0, 0, 0.28);
+    }
+
+    .field-input-wrap:focus-within {
+      border-color: rgba(77, 212, 255, 0.5);
+      box-shadow: 0 0 0 3px rgba(77, 212, 255, 0.12);
+    }
+
+    .field-input-wrap input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 11px 8px 11px 14px;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+      min-width: 0;
+    }
+
+    .field-input-wrap input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .field-input-wrap input[type="number"]::-webkit-inner-spin-button,
+    .field-input-wrap input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .field-stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 2px;
+      margin: 5px 6px 5px 0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      opacity: 0.45;
+      flex-shrink: 0;
+      transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .field-input-wrap:hover .field-stepper,
+    .field-input-wrap:focus-within .field-stepper {
+      opacity: 1;
+      border-color: rgba(77, 212, 255, 0.15);
+      background: rgba(77, 212, 255, 0.06);
+    }
+
+    .step-btn {
+      width: 22px;
+      height: 15px;
+      border: none;
+      border-radius: 5px;
+      background: transparent;
+      color: rgba(143, 163, 199, 0.85);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+    }
+
+    .step-btn:hover {
+      color: var(--cyan);
+      background: rgba(77, 212, 255, 0.12);
+    }
+
+    .step-btn:active {
+      transform: scale(0.92);
+      background: rgba(77, 212, 255, 0.2);
+    }
+
+    .step-btn svg {
+      display: block;
+      pointer-events: none;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, var(--cyan), var(--gold));
+      color: #0a1020;
+      box-shadow: 0 8px 24px rgba(77, 212, 255, 0.3);
+    }
+
+    .btn-start:hover:not(:disabled) {
+      box-shadow: 0 10px 28px rgba(245, 197, 66, 0.35);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-stop {
+      background: rgba(248, 113, 113, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+    }
+
+    .btn-stop:hover {
+      background: rgba(248, 113, 113, 0.18);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    @keyframes activeTextBlink {
+      0%, 100% {
+        opacity: 0.35;
+        text-shadow: none;
+      }
+      50% {
+        opacity: 1;
+        text-shadow: 0 0 14px rgba(52, 211, 153, 0.9);
+      }
+    }
+
+    .help-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .help-modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .help-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 8, 18, 0.72);
+      backdrop-filter: blur(6px);
+    }
+
+    .help-dialog {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      max-height: calc(100vh - 24px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(18, 31, 61, 0.98), rgba(12, 20, 40, 0.98));
+      border: 1px solid rgba(77, 212, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      transform: translateY(12px) scale(0.97);
+      transition: transform 0.25s ease;
+    }
+
+    .help-modal.open .help-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .help-dialog-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .help-dialog-header h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .help-close {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .help-close:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .help-dialog-body {
+      padding: 12px 10px 14px 14px;
+      margin-right: 2px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(77, 212, 255, 0.38) rgba(255, 255, 255, 0.05);
+    }
+
+    .help-dialog-body::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .help-dialog-body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 999px;
+      margin: 8px 0;
+      box-shadow: inset 0 0 0 1px rgba(77, 212, 255, 0.07);
+    }
+
+    .help-dialog-body::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(77, 212, 255, 0.55), rgba(77, 212, 255, 0.22));
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(77, 212, 255, 0.12);
+    }
+
+    .help-dialog-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(77, 212, 255, 0.62);
+    }
+
+    .help-intro {
+      margin: 0 0 12px;
+      font-size: 0.74rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .help-demo {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .help-demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .help-voice-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid rgba(77, 212, 255, 0.2);
+      background: rgba(77, 212, 255, 0.08);
+      color: var(--muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: color 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .help-voice-btn:hover {
+      color: var(--cyan);
+      border-color: rgba(77, 212, 255, 0.35);
+    }
+
+    .help-voice-btn.active {
+      color: var(--cyan);
+      background: rgba(77, 212, 255, 0.16);
+      border-color: rgba(77, 212, 255, 0.45);
+      box-shadow: 0 0 10px rgba(77, 212, 255, 0.25);
+    }
+
+    .help-voice-btn svg {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+
+    .lang-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    .lang-bar label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .lang-select {
+      border: 1px solid rgba(77, 212, 255, 0.18);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .lang-select:focus {
+      border-color: rgba(77, 212, 255, 0.45);
+      box-shadow: 0 0 0 2px rgba(77, 212, 255, 0.12);
+    }
+
+    .help-demo-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(77, 212, 255, 0.8);
+      margin-bottom: 0;
+    }
+
+    .help-mini-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .help-mini-btn {
+      text-align: center;
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      opacity: 0.45;
+      transform: scale(1);
+      transition: opacity 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+    }
+
+    .help-mini-start {
+      background: linear-gradient(135deg, rgba(77, 212, 255, 0.25), rgba(245, 197, 66, 0.2));
+      color: var(--text);
+      border: 1px solid rgba(77, 212, 255, 0.2);
+    }
+
+    .help-mini-stop {
+      background: rgba(248, 113, 113, 0.08);
+      color: var(--danger);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+
+    .help-demo[data-phase="start"] .help-mini-start {
+      opacity: 1;
+      transform: scale(1.04);
+      box-shadow: 0 0 14px rgba(77, 212, 255, 0.4);
+    }
+
+    .help-demo[data-phase="stop"] .help-mini-stop {
+      opacity: 1;
+      transform: scale(1.04);
+      box-shadow: 0 0 12px rgba(248, 113, 113, 0.35);
+    }
+
+    .help-mini-status {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 54px;
+      height: 20px;
+      border-radius: 999px;
+      font-size: 0.58rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: color 0.35s ease, border-color 0.35s ease;
+    }
+
+    .help-mini-dot {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--muted);
+      box-shadow: none;
+      transform: translateY(-50%);
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .help-status-pasif,
+    .help-status-aktif {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: opacity 0.35s ease;
+    }
+
+    .help-status-aktif {
+      opacity: 0;
+    }
+
+    .help-demo[data-phase="start"] .help-status-pasif,
+    .help-demo[data-phase="stop"] .help-status-pasif {
+      opacity: 1;
+    }
+
+    .help-demo[data-phase="start"] .help-status-aktif,
+    .help-demo[data-phase="stop"] .help-status-aktif {
+      opacity: 0;
+    }
+
+    .help-demo[data-phase="active-wait"] .help-status-pasif,
+    .help-demo[data-phase="move-right"] .help-status-pasif,
+    .help-demo[data-phase="wait-click"] .help-status-pasif,
+    .help-demo[data-phase="move-left"] .help-status-pasif,
+    .help-demo[data-phase="loop"] .help-status-pasif {
+      opacity: 0;
+    }
+
+    .help-demo[data-phase="active-wait"] .help-status-aktif,
+    .help-demo[data-phase="move-right"] .help-status-aktif,
+    .help-demo[data-phase="wait-click"] .help-status-aktif,
+    .help-demo[data-phase="move-left"] .help-status-aktif,
+    .help-demo[data-phase="loop"] .help-status-aktif {
+      opacity: 1;
+    }
+
+    .help-demo[data-phase="active-wait"] .help-mini-status,
+    .help-demo[data-phase="move-right"] .help-mini-status,
+    .help-demo[data-phase="wait-click"] .help-mini-status,
+    .help-demo[data-phase="move-left"] .help-mini-status,
+    .help-demo[data-phase="loop"] .help-mini-status {
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.35);
+    }
+
+    .help-demo[data-phase="active-wait"] .help-mini-dot,
+    .help-demo[data-phase="move-right"] .help-mini-dot,
+    .help-demo[data-phase="wait-click"] .help-mini-dot,
+    .help-demo[data-phase="move-left"] .help-mini-dot,
+    .help-demo[data-phase="loop"] .help-mini-dot {
+      background: #34d399;
+      box-shadow: 0 0 6px rgba(52, 211, 153, 0.8);
+    }
+
+    .help-scene {
+      position: relative;
+      height: 72px;
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(77, 212, 255, 0.06), transparent),
+        rgba(255, 255, 255, 0.03);
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .help-track {
+      position: absolute;
+      top: 50%;
+      left: 18%;
+      right: 18%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(245, 197, 66, 0.5), transparent);
+      transform: translateY(-50%);
+      opacity: 0.2;
+      transition: opacity 0.4s ease;
+    }
+
+    .help-demo[data-phase="move-right"] .help-track,
+    .help-demo[data-phase="wait-click"] .help-track,
+    .help-demo[data-phase="move-left"] .help-track,
+    .help-demo[data-phase="loop"] .help-track {
+      opacity: 1;
+    }
+
+    .help-cursor {
+      position: absolute;
+      top: 50%;
+      left: 32%;
+      width: 16px;
+      height: 16px;
+      transform: translate(-20%, -30%);
+      opacity: 0.35;
+      transition: left 2.4s ease-in-out, opacity 0.45s ease;
+      filter: drop-shadow(0 0 6px rgba(77, 212, 255, 0.6));
+    }
+
+    .help-demo[data-phase="move-right"] .help-cursor,
+    .help-demo[data-phase="wait-click"] .help-cursor {
+      left: 68%;
+      opacity: 1;
+    }
+
+    .help-demo[data-phase="move-left"] .help-cursor,
+    .help-demo[data-phase="loop"] .help-cursor {
+      left: 32%;
+      opacity: 1;
+    }
+
+    .help-click-ring {
+      position: absolute;
+      top: 50%;
+      left: 68%;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(245, 197, 66, 0.7);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0.4);
+      opacity: 0;
+    }
+
+    .help-demo[data-phase="wait-click"] .help-click-ring {
+      animation: clickRingPop 2.2s ease-out;
+    }
+
+    @keyframes clickRingPop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+      25% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      55% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.4); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.8); }
+    }
+
+    .help-demo-caption {
+      margin-top: 8px;
+      min-height: 2.2em;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: var(--text);
+      text-align: center;
+      transition: opacity 0.35s ease;
+    }
+
+    .help-demo-caption.fade {
+      opacity: 0.35;
+    }
+
+    .help-steps {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .help-steps li {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: 0.7rem;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .help-step-num {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      background: rgba(77, 212, 255, 0.1);
+      border: 1px solid rgba(77, 212, 255, 0.2);
+      color: var(--cyan);
+      font-size: 0.62rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <img src="icon.png" alt="RoboMouse" />
+        </div>
+        <div class="brand-text">
+          <h1>RoboMouse</h1>
+          <p data-i18n="appSubtitle">Otomasyon Paneli</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="help-trigger" onclick="openHelpModal()" data-i18n-aria="helpHowTo">
+          <span class="help-icon">i</span>
+          <span class="help-label" data-i18n="helpHowTo">Nasıl kullanılır?</span>
+        </button>
+
+        <div class="lang-bar">
+          <label for="langSelect" data-i18n="languageLabel">Dil</label>
+          <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="tr">TR</option>
+            <option value="en">EN</option>
+            <option value="de">DE</option>
+            <option value="ru">RU</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="appScroll" class="app-scroll">
+
+    <div id="permissionBanner" class="permission-banner loading">
+      <div id="permissionLoading" class="permission-loading">
+        <span class="permission-spinner" aria-hidden="true"></span>
+        <span data-i18n="permissionChecking">İzinler kontrol ediliyor...</span>
+      </div>
+      <div id="permissionWarning" class="permission-warning" hidden>
+        <span id="permissionMessage"></span>
+        <button type="button" onclick="openAccessibilitySettings()" data-i18n="permissionOpenSettings">Erişilebilirlik Ayarlarını Aç</button>
+      </div>
+    </div>
+
+    <div id="statusContainer" class="status-card">
+      <div id="statusIndicator" class="status-badge">
+        <span id="statusDot" class="status-dot"></span>
+        <span id="statusText" class="status-text" data-i18n="statusInactive">Pasif</span>
+      </div>
+      <div id="statusTimer" class="status-timer">00:00</div>
+      <div class="status-timer-label" data-i18n="runtimeLabel">Çalışma süresi</div>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <div class="field-header">
+          <label for="distanceInput" data-i18n="distanceLabel">Mouse mesafesi</label>
+          <span class="field-unit-badge">px</span>
+        </div>
+        <div class="field-input-wrap">
+          <input id="distanceInput" type="number" min="1" step="1" value="5" />
+          <div class="field-stepper">
+            <button type="button" class="step-btn" data-i18n-aria="stepUp" aria-label="Artir" onclick="stepInput('distanceInput', 1)">
+              <svg width="9" height="5" viewBox="0 0 9 5" fill="none" aria-hidden="true">
+                <path d="M1 4L4.5 1L8 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button type="button" class="step-btn" data-i18n-aria="stepDown" aria-label="Azalt" onclick="stepInput('distanceInput', -1)">
+              <svg width="9" height="5" viewBox="0 0 9 5" fill="none" aria-hidden="true">
+                <path d="M1 1L4.5 4L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-header">
+          <label for="intervalInput" data-i18n="intervalLabel">Döngü aralığı</label>
+          <span class="field-unit-badge" data-i18n="unitSec">sn</span>
+        </div>
+        <div class="field-input-wrap">
+          <input id="intervalInput" type="number" min="0.5" step="0.5" value="5" />
+          <div class="field-stepper">
+            <button type="button" class="step-btn" data-i18n-aria="stepUp" aria-label="Artir" onclick="stepInput('intervalInput', 1)">
+              <svg width="9" height="5" viewBox="0 0 9 5" fill="none" aria-hidden="true">
+                <path d="M1 4L4.5 1L8 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button type="button" class="step-btn" data-i18n-aria="stepDown" aria-label="Azalt" onclick="stepInput('intervalInput', -1)">
+              <svg width="9" height="5" viewBox="0 0 9 5" fill="none" aria-hidden="true">
+                <path d="M1 1L4.5 4L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="startBtn" class="btn btn-start" onclick="start()" data-i18n="btnStart" disabled>Başlat</button>
+      <button class="btn btn-stop" onclick="stop()" data-i18n="btnStop">Durdur</button>
+    </div>
+
+    </div>
+  </div>
+
+  <div id="helpModal" class="help-modal" aria-hidden="true" role="dialog" aria-labelledby="helpTitle">
+    <div class="help-backdrop" onclick="closeHelpModal()"></div>
+    <div class="help-dialog">
+      <div class="help-dialog-header">
+        <h3 id="helpTitle" data-i18n="helpTitle">RoboMouse Nedir?</h3>
+        <button type="button" class="help-close" onclick="closeHelpModal()" data-i18n-aria="helpClose" aria-label="Kapat">×</button>
+      </div>
+      <div class="help-dialog-body">
+        <p class="help-intro" data-i18n="helpIntro">
+          Bilgisayarınızı aktif tutmak için fareyi otomatik hareket ettirir. İlk kullanımda
+          macOS Erişilebilirlik izni gerekir.
+        </p>
+
+        <div class="help-demo" id="helpDemo" data-phase="start">
+          <div class="help-demo-header">
+            <div class="help-demo-label" data-i18n="helpDemoLabel">Nasıl çalışır?</div>
+            <button
+              type="button"
+              id="helpVoiceBtn"
+              class="help-voice-btn"
+              onclick="toggleHelpVoice()"
+              data-i18n-aria="helpVoiceOff"
+              aria-label="Seslendirmeyi aç"
+              aria-pressed="false"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M15.5 8.5a5 5 0 010 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M18 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+              </svg>
+            </button>
+          </div>
+          <div class="help-mini-actions">
+            <span class="help-mini-btn help-mini-start" data-i18n="btnStart">Başlat</span>
+            <span class="help-mini-btn help-mini-stop" data-i18n="btnStop">Durdur</span>
+          </div>
+          <div class="help-scene" id="helpScene">
+            <div class="help-mini-status">
+              <span class="help-mini-dot"></span>
+              <span class="help-status-pasif" data-i18n="statusInactive">Pasif</span>
+              <span class="help-status-aktif" data-i18n="statusActive">Aktif</span>
+            </div>
+            <div class="help-track"></div>
+            <svg class="help-cursor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 4l14 8-6 1-3 6z" fill="#f4f8ff" stroke="#4dd4ff" stroke-width="1.2" stroke-linejoin="round"/>
+            </svg>
+            <div class="help-click-ring"></div>
+          </div>
+          <div id="helpDemoCaption" class="help-demo-caption">Başlat butonuna basın — otomasyon başlar</div>
+        </div>
+
+        <ol class="help-steps">
+          <li>
+            <span class="help-step-num">1</span>
+            <span data-i18n-html="helpStep1"><strong>Mouse mesafesi</strong> ve <strong>döngü aralığı</strong> değerlerini ayarlayın.</span>
+          </li>
+          <li>
+            <span class="help-step-num">2</span>
+            <span data-i18n-html="helpStep2"><strong>Başlat</strong> ile fare otomatik hareket eder, tıklar ve geri döner.</span>
+          </li>
+          <li>
+            <span class="help-step-num">3</span>
+            <span data-i18n-html="helpStep3"><strong>Durdur</strong> ile istediğiniz zaman otomasyonu kapatabilirsiniz.</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script>
+    let statusIntervalId = null;
+    let statusStartTime = null;
+    let helpVoiceEnabled = localStorage.getItem("roboMouse.helpVoice") === "true";
+
+    function changeLanguage(lang) {
+      const modalOpen = document.getElementById("helpModal").classList.contains("open");
+      stopSpeech();
+      setLanguage(lang);
+      window.api.setMenuLanguage(lang);
+      updateHelpVoiceButton();
+      refreshPermissionBanner();
+      if (!statusIntervalId) {
+        setStatusActive(false);
+      }
+      if (modalOpen) {
+        startHelpDemo();
+      }
+    }
+
+    function updateHelpVoiceButton() {
+      const btn = document.getElementById("helpVoiceBtn");
+      if (!btn) return;
+      btn.classList.toggle("active", helpVoiceEnabled);
+      btn.setAttribute("aria-pressed", String(helpVoiceEnabled));
+      btn.setAttribute("data-i18n-aria", helpVoiceEnabled ? "helpVoiceOn" : "helpVoiceOff");
+      btn.setAttribute("aria-label", t(helpVoiceEnabled ? "helpVoiceOn" : "helpVoiceOff"));
+    }
+
+    function stopSpeech() {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function toggleHelpVoice() {
+      helpVoiceEnabled = !helpVoiceEnabled;
+      localStorage.setItem("roboMouse.helpVoice", String(helpVoiceEnabled));
+      updateHelpVoiceButton();
+      if (isHelpModalOpen()) {
+        stopSpeech();
+        startHelpDemo();
+      }
+    }
+
+    let permissionCheckDone = false;
+    let mouseControlAllowed = false;
+
+    function setStartButtonEnabled(enabled) {
+      mouseControlAllowed = enabled;
+      document.getElementById("startBtn").disabled = !enabled;
+    }
+
+    function setPermissionBannerState(state) {
+      const banner = document.getElementById("permissionBanner");
+      const loading = document.getElementById("permissionLoading");
+      const warning = document.getElementById("permissionWarning");
+      const scrollArea = document.getElementById("appScroll");
+
+      banner.className = "permission-banner" + (state === "hidden" ? "" : " " + state);
+      loading.hidden = state !== "loading";
+      warning.hidden = state !== "warning";
+      scrollArea.classList.toggle("scrollable", state === "warning");
+    }
+
+    async function refreshPermissionBanner() {
+      const message = document.getElementById("permissionMessage");
+
+      if (!permissionCheckDone) {
+        setPermissionBannerState("loading");
+        setStartButtonEnabled(false);
+      }
+
+      try {
+        const status = await window.api.getPermissions();
+        permissionCheckDone = true;
+
+        if (status.working) {
+          setPermissionBannerState("hidden");
+          setStartButtonEnabled(true);
+          message.textContent = "";
+          schedulePermissionPoll(true);
+          return;
+        }
+
+        setPermissionBannerState("warning");
+        setStartButtonEnabled(false);
+        message.textContent = t("permissionRequired");
+        schedulePermissionPoll(false);
+      } catch (error) {
+        console.error("Permission check failed:", error);
+        permissionCheckDone = true;
+        setPermissionBannerState("warning");
+        setStartButtonEnabled(false);
+        message.textContent = t("permissionRequired");
+        schedulePermissionPoll(false);
+      }
+    }
+
+    let permissionPollId = null;
+
+    function schedulePermissionPoll(isWorking) {
+      if (permissionPollId) {
+        clearInterval(permissionPollId);
+      }
+
+      permissionPollId = setInterval(refreshPermissionBanner, isWorking ? 10000 : 2000);
+    }
+
+    function openAccessibilitySettings() {
+      window.api.requestAccessibility();
+    }
+
+    const helpPhases = [
+      { id: "start", duration: 3000, captionKey: "helpPhaseStart" },
+      { id: "active-wait", duration: 3000, captionKey: "helpPhaseActiveWait" },
+      { id: "move-right", duration: 2800, captionKey: "helpPhaseMoveRight" },
+      { id: "wait-click", duration: 2800, captionKey: "helpPhaseWaitClick" },
+      { id: "move-left", duration: 2800, captionKey: "helpPhaseMoveLeft" },
+      { id: "loop", duration: 3000, captionKey: "helpPhaseLoop" },
+      { id: "stop", duration: 3000, captionKey: "helpPhaseStop" }
+    ];
+
+    const phaseMinVisualMs = {
+      start: 1200,
+      "active-wait": 1500,
+      "move-right": 2600,
+      "wait-click": 2400,
+      "move-left": 2600,
+      loop: 1500,
+      stop: 1200
+    };
+
+    let helpPhaseIndex = 0;
+    let helpDemoRunId = 0;
+
+    function setHelpCaptionText(text) {
+      const captionEl = document.getElementById("helpDemoCaption");
+      captionEl.textContent = text;
+    }
+
+    function isHelpModalOpen() {
+      return document.getElementById("helpModal").classList.contains("open");
+    }
+
+    function waitMs(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function speakCaption(text) {
+      return new Promise(resolve => {
+        if (!helpVoiceEnabled || !window.speechSynthesis || !text) {
+          resolve();
+          return;
+        }
+
+        stopSpeech();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = getSpeechLang();
+        utterance.rate = 0.92;
+        utterance.onend = () => resolve();
+        utterance.onerror = () => resolve();
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+
+    function resetClickRingAnimation(demo) {
+      const ring = demo.querySelector(".help-click-ring");
+      ring.style.animation = "none";
+      void ring.offsetWidth;
+      ring.style.animation = "";
+    }
+
+    async function runHelpPhase(index, runId) {
+      if (!isHelpModalOpen() || runId !== helpDemoRunId) return;
+
+      helpPhaseIndex = index;
+      const phase = helpPhases[index];
+      const demo = document.getElementById("helpDemo");
+      const caption = t(phase.captionKey);
+
+      demo.setAttribute("data-phase", phase.id);
+      setHelpCaptionText(caption);
+
+      if (phase.id === "wait-click") {
+        resetClickRingAnimation(demo);
+      }
+
+      const visualMs = helpVoiceEnabled
+        ? phaseMinVisualMs[phase.id] || phase.duration
+        : phase.duration;
+
+      await Promise.all([speakCaption(caption), waitMs(visualMs)]);
+
+      if (!isHelpModalOpen() || runId !== helpDemoRunId) return;
+
+      if (helpVoiceEnabled) {
+        await waitMs(400);
+      }
+
+      if (!isHelpModalOpen() || runId !== helpDemoRunId) return;
+
+      const nextIndex = (index + 1) % helpPhases.length;
+      runHelpPhase(nextIndex, runId);
+    }
+
+    function startHelpDemo() {
+      helpDemoRunId += 1;
+      const runId = helpDemoRunId;
+      helpPhaseIndex = 0;
+      runHelpPhase(0, runId);
+    }
+
+    function stopHelpDemo() {
+      helpDemoRunId += 1;
+      stopSpeech();
+    }
+
+    function openHelpModal() {
+      const modal = document.getElementById("helpModal");
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      startHelpDemo();
+    }
+
+    function closeHelpModal() {
+      const modal = document.getElementById("helpModal");
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      stopHelpDemo();
+      stopSpeech();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeHelpModal();
+      }
+    });
+
+    function stepInput(inputId, direction) {
+      const input = document.getElementById(inputId);
+      const step = parseFloat(input.step) || 1;
+      const min = input.min !== "" ? parseFloat(input.min) : -Infinity;
+      const max = input.max !== "" ? parseFloat(input.max) : Infinity;
+      const current = parseFloat(input.value) || min;
+      const next = Math.min(max, Math.max(min, current + direction * step));
+      const decimals = (step.toString().split(".")[1] || "").length;
+      input.value = decimals ? next.toFixed(decimals) : String(Math.round(next));
+    }
+
+    function formatDuration(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    function updateStatusTimer() {
+      if (!statusStartTime) return;
+      document.getElementById("statusTimer").textContent = formatDuration(Date.now() - statusStartTime);
+    }
+
+    function setStatusActive(isActive) {
+      const statusIndicator = document.getElementById("statusIndicator");
+      const statusText = document.getElementById("statusText");
+
+      if (isActive) {
+        statusIndicator.classList.add("active");
+        statusText.textContent = t("statusActive");
+      } else {
+        statusIndicator.classList.remove("active");
+        statusText.textContent = t("statusInactive");
+      }
+    }
+
+    function startStatusTimer() {
+      statusStartTime = Date.now();
+      updateStatusTimer();
+      if (statusIntervalId) clearInterval(statusIntervalId);
+      statusIntervalId = setInterval(updateStatusTimer, 1000);
+      setStatusActive(true);
+    }
+
+    function stopStatusTimer() {
+      if (statusIntervalId) {
+        clearInterval(statusIntervalId);
+        statusIntervalId = null;
+      }
+      statusStartTime = null;
+      document.getElementById("statusTimer").textContent = "00:00";
+      setStatusActive(false);
+    }
+
+    function start() {
+      if (!mouseControlAllowed) {
+        openAccessibilitySettings();
+        return;
+      }
+
+      const distancePx = parseInt(document.getElementById("distanceInput").value, 10);
+      const intervalSeconds = parseFloat(document.getElementById("intervalInput").value);
+      const safeDistance = Number.isFinite(distancePx) && distancePx > 0 ? distancePx : 5;
+      const safeInterval = Number.isFinite(intervalSeconds) && intervalSeconds > 0 ? intervalSeconds : 5;
+      window.api.start(safeDistance, safeInterval);
+    }
+
+    function stop() {
+      window.api.stop();
+    }
+
+    function syncSettingsToMain() {
+      const distancePx = parseInt(document.getElementById("distanceInput").value, 10);
+      const intervalSeconds = parseFloat(document.getElementById("intervalInput").value);
+      const safeDistance = Number.isFinite(distancePx) && distancePx > 0 ? distancePx : 5;
+      const safeInterval = Number.isFinite(intervalSeconds) && intervalSeconds > 0 ? intervalSeconds : 5;
+      window.api.syncSettings(safeDistance, safeInterval);
+    }
+
+    function applySettingsFromMain(data) {
+      if (!data) return;
+      if (Number.isFinite(data.distancePx) && data.distancePx > 0) {
+        document.getElementById("distanceInput").value = String(data.distancePx);
+      }
+      if (Number.isFinite(data.intervalSeconds) && data.intervalSeconds > 0) {
+        document.getElementById("intervalInput").value = String(data.intervalSeconds);
+      }
+    }
+
+    window.api.onBotStarted(() => startStatusTimer());
+    window.api.onBotStopped(() => stopStatusTimer());
+    window.api.onSettingsUpdated(applySettingsFromMain);
+    window.api.onBotStartFailed((data) => {
+      stopStatusTimer();
+      alert(translateError(data));
+      refreshPermissionBanner();
+    });
+    window.api.onBotError((data) => {
+      stopStatusTimer();
+      alert(translateError(data));
+      refreshPermissionBanner();
+    });
+    window.api.onPermissionsChanged(() => refreshPermissionBanner());
+
+    document.getElementById("langSelect").value = currentLang;
+    applyTranslations();
+    updateHelpVoiceButton();
+    window.api.setMenuLanguage(currentLang);
+    document.getElementById("distanceInput").addEventListener("change", syncSettingsToMain);
+    document.getElementById("intervalInput").addEventListener("change", syncSettingsToMain);
+    syncSettingsToMain();
+    refreshPermissionBanner();
+  </script>
+
+</body>
+</html>
