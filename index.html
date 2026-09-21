@@ -42,19 +42,26 @@
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
       color: var(--text);
       background:
+        repeating-linear-gradient(
+          135deg,
+          rgba(77, 212, 255, 0.03) 0px,
+          rgba(77, 212, 255, 0.03) 1px,
+          transparent 1px,
+          transparent 12px
+        ),
         radial-gradient(ellipse 80% 60% at 50% -10%, rgba(77, 212, 255, 0.18), transparent 55%),
         radial-gradient(ellipse 50% 40% at 100% 100%, rgba(245, 197, 66, 0.1), transparent 50%),
         linear-gradient(160deg, var(--bg-1), var(--bg-2));
       display: flex;
       align-items: stretch;
       justify-content: center;
-      padding: 12px;
+      padding: 14px;
       -webkit-font-smoothing: antialiased;
     }
 
     .app-container {
       width: 100%;
-      max-width: 340px;
+      max-width: 440px;
       height: 100%;
       max-height: 100%;
       background: var(--card);
@@ -80,40 +87,277 @@
       flex: 1;
       min-height: 0;
       overflow-x: hidden;
-      overflow-y: hidden;
-      padding: 14px 20px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .app-scroll.scrollable {
       overflow-y: auto;
       padding: 14px 10px 18px 20px;
       margin-right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
       scrollbar-width: thin;
       scrollbar-color: rgba(77, 212, 255, 0.38) rgba(255, 255, 255, 0.05);
     }
 
-    .app-scroll.scrollable::-webkit-scrollbar {
+    .app-scroll::-webkit-scrollbar {
       width: 4px;
     }
 
-    .app-scroll.scrollable::-webkit-scrollbar-track {
+    .app-scroll::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.04);
       border-radius: 999px;
       margin: 8px 0;
-      box-shadow: inset 0 0 0 1px rgba(77, 212, 255, 0.07);
     }
 
-    .app-scroll.scrollable::-webkit-scrollbar-thumb {
+    .app-scroll::-webkit-scrollbar-thumb {
       background: linear-gradient(180deg, rgba(77, 212, 255, 0.55), rgba(77, 212, 255, 0.22));
       border-radius: 999px;
-      box-shadow: 0 0 10px rgba(77, 212, 255, 0.12);
     }
 
-    .app-scroll.scrollable::-webkit-scrollbar-thumb:hover {
-      background: rgba(77, 212, 255, 0.62);
+    .app-scroll.scrollable {
+      overflow-y: auto;
+    }
+
+    .section-card {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid transparent;
+      border-radius: 16px;
+      padding: 14px 16px;
+      background-clip: padding-box;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      position: relative;
+    }
+
+    .section-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(77, 212, 255, 0.22), rgba(245, 197, 66, 0.12));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-card > .section-title {
+      margin-bottom: 12px;
+    }
+
+    .collapsible-section .section-collapse-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 12px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: inherit;
+      text-align: left;
+      transition: opacity 0.15s;
+    }
+
+    .collapsible-section.collapsed .section-collapse-trigger {
+      margin-bottom: 0;
+    }
+
+    .collapsible-section .section-collapse-trigger:hover {
+      opacity: 0.9;
+    }
+
+    .collapsible-section .section-collapse-trigger:focus-visible {
+      outline: 2px solid rgba(77, 212, 255, 0.45);
+      outline-offset: 3px;
+      border-radius: 8px;
+    }
+
+    .section-collapse-chevron {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-left: auto;
+      color: var(--muted);
+      transition: transform 0.22s ease, color 0.2s;
+    }
+
+    .collapsible-section .section-collapse-trigger:hover .section-collapse-chevron {
+      color: var(--cyan);
+    }
+
+    .collapsible-section.collapsed .section-collapse-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .schedule-panel {
+      overflow: hidden;
+      transition: max-height 0.28s ease, opacity 0.22s ease;
+      max-height: 520px;
+      opacity: 1;
+    }
+
+    .collapsible-section.collapsed .schedule-panel {
+      max-height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .schedule-countdown {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--cyan);
+      font-variant-numeric: tabular-nums;
+      min-height: 1.1em;
+    }
+
+    .schedule-countdown.idle-hint {
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.35;
+    }
+
+    .schedule-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .schedule-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .schedule-row-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .schedule-row-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .schedule-row-hint {
+      font-size: 0.66rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .schedule-row-fields {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .schedule-row-fields.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .schedule-duration-fields {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .schedule-duration-fields .field-input-wrap {
+      flex: 1;
+    }
+
+    .schedule-duration-fields input {
+      text-align: center;
+      padding-left: 8px;
+    }
+
+    .time-input {
+      flex: 1;
+      min-width: 110px;
+      border: 1px solid var(--card-border);
+      background: rgba(0, 0, 0, 0.22);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+    }
+
+    .time-input:focus {
+      border-color: rgba(77, 212, 255, 0.5);
+      box-shadow: 0 0 0 3px rgba(77, 212, 255, 0.12);
+    }
+
+    .time-separator {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .toggle {
+      position: relative;
+      width: 42px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .toggle-track::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .toggle input:checked + .toggle-track {
+      background: rgba(77, 212, 255, 0.2);
+      border-color: rgba(77, 212, 255, 0.45);
+    }
+
+    .toggle input:checked + .toggle-track::after {
+      transform: translateX(18px);
+      background: var(--cyan);
+    }
+
+    .actions-bar {
+      flex-shrink: 0;
+      padding: 0 20px 18px;
+      border-top: 1px solid rgba(77, 212, 255, 0.06);
+      background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.12));
     }
 
     .brand {
@@ -492,7 +736,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 2px;
+      padding-top: 14px;
     }
 
     .btn {
@@ -1012,6 +1256,228 @@
       display: grid;
       place-items: center;
     }
+
+    .settings-trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 10px;
+      border: 1px solid rgba(77, 212, 255, 0.18);
+      background: rgba(77, 212, 255, 0.06);
+      color: var(--cyan);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .settings-trigger:hover {
+      background: rgba(77, 212, 255, 0.12);
+      border-color: rgba(77, 212, 255, 0.35);
+    }
+
+    .settings-trigger svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .smart-hint {
+      margin-top: 10px;
+      min-height: 1.2em;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    .smart-hint:empty {
+      display: none;
+    }
+
+    .status-badge.waiting {
+      border-color: rgba(245, 197, 66, 0.35);
+      background: rgba(245, 197, 66, 0.08);
+    }
+
+    .status-badge.waiting .status-text {
+      color: var(--gold);
+    }
+
+    .status-badge.waiting .status-dot {
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(245, 197, 66, 0.6);
+    }
+
+    .settings-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .settings-sheet.open {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    .settings-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 8, 16, 0.55);
+      backdrop-filter: blur(4px);
+    }
+
+    .settings-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: min(100%, 400px);
+      height: 100%;
+      background: linear-gradient(165deg, rgba(14, 24, 48, 0.98), rgba(8, 12, 20, 0.98));
+      border-left: 1px solid var(--card-border);
+      box-shadow: -12px 0 40px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+    }
+
+    .settings-sheet.open .settings-panel {
+      transform: translateX(0);
+    }
+
+    .settings-panel-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid rgba(77, 212, 255, 0.08);
+    }
+
+    .settings-panel-header h2 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .settings-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .settings-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .settings-opt-in-hint {
+      margin: 0;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .settings-section-title {
+      margin: 0 0 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+    }
+
+    .smart-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .smart-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .smart-row-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .smart-row-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .smart-row-hint {
+      font-size: 0.66rem;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .idle-threshold-wrap.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .chip-btn {
+      min-width: 36px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(77, 212, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip-btn.selected {
+      border-color: rgba(77, 212, 255, 0.5);
+      background: rgba(77, 212, 255, 0.15);
+      color: var(--cyan);
+    }
+
+    .hotkey-accelerator {
+      margin-top: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .hotkey-accelerator.disabled {
+      opacity: 0.4;
+    }
   </style>
 </head>
 <body>
@@ -1029,6 +1495,13 @@
       </div>
 
       <div class="header-actions">
+        <button type="button" class="settings-trigger" onclick="openSettingsSheet()" data-i18n-aria="settingsOpen" aria-label="Ayarlar">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
         <button type="button" class="help-trigger" onclick="openHelpModal()" data-i18n-aria="helpHowTo">
           <span class="help-icon">i</span>
           <span class="help-label" data-i18n="helpHowTo">Nasıl kullanılır?</span>
@@ -1059,15 +1532,19 @@
       </div>
     </div>
 
-    <div id="statusContainer" class="status-card">
+    <div id="statusContainer" class="status-card section-card">
       <div id="statusIndicator" class="status-badge">
         <span id="statusDot" class="status-dot"></span>
         <span id="statusText" class="status-text" data-i18n="statusInactive">Pasif</span>
       </div>
       <div id="statusTimer" class="status-timer">00:00</div>
       <div class="status-timer-label" data-i18n="runtimeLabel">Çalışma süresi</div>
+      <div id="scheduleCountdown" class="schedule-countdown idle-hint" data-i18n="scheduleCountdownIdle">Zamanlama ayarlı — başlatınca geri sayım görünür</div>
+      <div id="smartHint" class="smart-hint"></div>
     </div>
 
+    <div class="section-card">
+      <h2 class="section-title" data-i18n="movementTitle">Hareket ayarları</h2>
     <div class="controls">
       <div class="field">
         <div class="field-header">
@@ -1113,12 +1590,163 @@
         </div>
       </div>
     </div>
-
-    <div class="actions">
-      <button id="startBtn" class="btn btn-start" onclick="start()" data-i18n="btnStart" disabled>Başlat</button>
-      <button class="btn btn-stop" onclick="stop()" data-i18n="btnStop">Durdur</button>
     </div>
 
+    </div>
+
+    <div class="actions-bar">
+    <div class="actions">
+      <button id="startBtn" class="btn btn-start" onclick="start()" data-i18n="btnStart" disabled>Başlat</button>
+      <button id="stopBtn" class="btn btn-stop" onclick="stop()" data-i18n="btnStop" disabled>Durdur</button>
+    </div>
+    </div>
+  </div>
+
+  <div id="settingsSheet" class="settings-sheet" aria-hidden="true">
+    <div class="settings-backdrop" onclick="closeSettingsSheet()"></div>
+    <div class="settings-panel" role="dialog" aria-labelledby="settingsTitle">
+      <div class="settings-panel-header">
+        <h2 id="settingsTitle" data-i18n="settingsTitle">Ayarlar</h2>
+        <button type="button" class="settings-close" onclick="closeSettingsSheet()" data-i18n-aria="settingsClose" aria-label="Kapat">×</button>
+      </div>
+      <div class="settings-scroll">
+        <p class="settings-opt-in-hint" data-i18n="settingsOptInHint">Akıllı modlar kapalıdır — etkinleştirmek için aşağıdaki seçenekleri açın.</p>
+
+        <div class="section-card">
+          <h3 class="settings-section-title" data-i18n="smartModesTitle">Akıllı modlar</h3>
+
+          <div class="smart-row">
+            <div class="smart-row-head">
+              <span class="smart-row-label" data-i18n="smartIdleLabel">Sadece idle olunca çalış</span>
+              <label class="toggle">
+                <input id="idleEnabled" type="checkbox" onchange="onSmartToggle()" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            <div class="smart-row-hint" data-i18n="smartIdleHint">Aktifken fare oynamaz; belirlenen süre hareketsiz kalınca başlar</div>
+            <div id="idleThresholdGroup" class="idle-threshold-wrap disabled">
+              <span class="smart-row-hint" data-i18n="smartIdleThreshold">Idle eşiği</span>
+              <div class="chip-group" id="idleChips">
+                <button type="button" class="chip-btn" data-minutes="1" onclick="selectIdleThreshold(1)">1</button>
+                <button type="button" class="chip-btn selected" data-minutes="3" onclick="selectIdleThreshold(3)">3</button>
+                <button type="button" class="chip-btn" data-minutes="5" onclick="selectIdleThreshold(5)">5</button>
+                <button type="button" class="chip-btn" data-minutes="10" onclick="selectIdleThreshold(10)">10</button>
+                <button type="button" class="chip-btn" data-minutes="15" onclick="selectIdleThreshold(15)">15</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="smart-row">
+            <div class="smart-row-head">
+              <span class="smart-row-label" data-i18n="smartMeetingLabel">Toplantıda duraklat</span>
+              <label class="toggle">
+                <input id="meetingEnabled" type="checkbox" onchange="onSmartToggle()" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            <div class="smart-row-hint" data-i18n="smartMeetingHint">Zoom ve Teams desteklenir; tarayıcı Meet best-effort</div>
+          </div>
+
+          <div class="smart-row">
+            <div class="smart-row-head">
+              <span class="smart-row-label" data-i18n="smartPresentationLabel">Sunum modu</span>
+              <label class="toggle">
+                <input id="presentationMode" type="checkbox" onchange="onSmartToggle()" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            <div class="smart-row-hint" data-i18n="smartPresentationHint">Açıkken otomasyon her zaman duraklatılır</div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3 class="settings-section-title" data-i18n="hotkeyTitle">Kısayol</h3>
+          <div class="smart-row">
+            <div class="smart-row-head">
+              <span class="smart-row-label" data-i18n="hotkeyEnableLabel">Global kısayol</span>
+              <label class="toggle">
+                <input id="hotkeyEnabled" type="checkbox" onchange="onSmartToggle()" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+            <div class="smart-row-hint" data-i18n="hotkeyEnableHint">Panel kapalıyken oturumu aç/kapa</div>
+            <div id="hotkeyAccelerator" class="hotkey-accelerator disabled" data-i18n="hotkeyAccelerator">Cmd+Shift+M / Ctrl+Shift+M</div>
+          </div>
+        </div>
+
+        <div id="scheduleCard" class="section-card collapsible-section collapsed">
+          <button
+            type="button"
+            id="scheduleCollapseTrigger"
+            class="section-collapse-trigger"
+            onclick="toggleSchedulePanel()"
+            aria-expanded="false"
+            aria-controls="schedulePanel"
+            data-i18n-aria="scheduleExpand"
+          >
+            <span class="section-title" data-i18n="scheduleTitle">Otomatik durdurma</span>
+            <svg class="section-collapse-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div id="schedulePanel" class="schedule-panel">
+            <div class="schedule-options">
+              <div class="schedule-row">
+                <div class="schedule-row-head">
+                  <span class="schedule-row-label" data-i18n="scheduleDuration">Süre sonunda dur</span>
+                  <label class="toggle">
+                    <input id="durationEnabled" type="checkbox" onchange="onScheduleToggle()" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="schedule-row-hint" data-i18n="scheduleDurationHint">Başladıktan sonra belirlenen sürede otomatik durur</div>
+                <div id="durationFields" class="schedule-row-fields disabled">
+                  <div class="schedule-duration-fields">
+                    <div class="field-input-wrap">
+                      <input id="durationHours" type="number" min="0" max="23" step="1" value="2" aria-label="Hours" />
+                    </div>
+                    <span class="time-separator" data-i18n="scheduleHours">Saat</span>
+                    <div class="field-input-wrap">
+                      <input id="durationMinutesInput" type="number" min="0" max="59" step="1" value="0" aria-label="Minutes" />
+                    </div>
+                    <span class="time-separator" data-i18n="scheduleMinutes">Dakika</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="schedule-row">
+                <div class="schedule-row-head">
+                  <span class="schedule-row-label" data-i18n="scheduleStopAt">Saatte dur</span>
+                  <label class="toggle">
+                    <input id="stopTimeEnabled" type="checkbox" onchange="onScheduleToggle()" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div id="stopTimeFields" class="schedule-row-fields disabled">
+                  <input id="stopTimeInput" class="time-input" type="time" value="18:00" />
+                </div>
+              </div>
+
+              <div class="schedule-row">
+                <div class="schedule-row-head">
+                  <span class="schedule-row-label" data-i18n="scheduleWindow">Yalnızca şu saatler arasında çalış</span>
+                  <label class="toggle">
+                    <input id="windowEnabled" type="checkbox" onchange="onScheduleToggle()" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="schedule-row-hint" data-i18n="scheduleWindowHint">Pencere dışında başlatılamaz; bitiş saatinde durur</div>
+                <div id="windowFields" class="schedule-row-fields disabled">
+                  <span class="time-separator" data-i18n="scheduleFrom">Başlangıç</span>
+                  <input id="windowStartInput" class="time-input" type="time" value="09:00" />
+                  <span class="time-separator" data-i18n="scheduleTo">Bitiş</span>
+                  <input id="windowEndInput" class="time-input" type="time" value="18:00" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1186,6 +1814,10 @@
             <span class="help-step-num">3</span>
             <span data-i18n-html="helpStep3"><strong>Durdur</strong> ile istediğiniz zaman otomasyonu kapatabilirsiniz.</span>
           </li>
+          <li>
+            <span class="help-step-num">4</span>
+            <span data-i18n-html="helpStep4"><strong>Zamanlama</strong> ile süre limiti, durma saati veya çalışma penceresi belirleyin.</span>
+          </li>
         </ol>
       </div>
     </div>
@@ -1195,6 +1827,10 @@
   <script>
     let statusIntervalId = null;
     let statusStartTime = null;
+    let botRunning = false;
+    let automationPaused = false;
+    let pauseReason = null;
+    let idleThresholdMinutes = 3;
     let helpVoiceEnabled = localStorage.getItem("roboMouse.helpVoice") === "true";
 
     function changeLanguage(lang) {
@@ -1209,6 +1845,11 @@
       }
       if (modalOpen) {
         startHelpDemo();
+      }
+      const trigger = document.getElementById("scheduleCollapseTrigger");
+      if (trigger) {
+        const expanded = trigger.getAttribute("aria-expanded") === "true";
+        trigger.setAttribute("aria-label", t(expanded ? "scheduleCollapse" : "scheduleExpand"));
       }
     }
 
@@ -1242,7 +1883,167 @@
 
     function setStartButtonEnabled(enabled) {
       mouseControlAllowed = enabled;
-      document.getElementById("startBtn").disabled = !enabled;
+      updateActionButtons();
+    }
+
+    function updateActionButtons() {
+      const startBtn = document.getElementById("startBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      startBtn.disabled = botRunning || !mouseControlAllowed;
+      stopBtn.disabled = !botRunning;
+    }
+
+    function setBotRunning(isRunning) {
+      botRunning = isRunning;
+      updateActionButtons();
+      updateScheduleFieldLock();
+    }
+
+    function updateScheduleFieldLock() {
+      const locked = botRunning;
+      document.querySelectorAll(".schedule-options input, .schedule-options .toggle input").forEach(el => {
+        el.disabled = locked;
+      });
+    }
+
+    function minutesToHoursMinutes(totalMinutes) {
+      const minutes = Math.max(1, parseInt(totalMinutes, 10) || 1);
+      return {
+        hours: Math.floor(minutes / 60),
+        minutes: minutes % 60 || (minutes >= 60 ? 0 : minutes)
+      };
+    }
+
+    function getDurationTotalMinutes() {
+      const hours = Math.max(0, parseInt(document.getElementById("durationHours").value, 10) || 0);
+      const minutes = Math.max(0, parseInt(document.getElementById("durationMinutesInput").value, 10) || 0);
+      const total = hours * 60 + minutes;
+      return Math.max(1, total);
+    }
+
+    function getScheduleFromUI() {
+      const durationEnabled = document.getElementById("durationEnabled").checked;
+      const stopTimeEnabled = document.getElementById("stopTimeEnabled").checked;
+      const windowEnabled = document.getElementById("windowEnabled").checked;
+
+      return {
+        durationEnabled,
+        durationMinutes: getDurationTotalMinutes(),
+        stopTimeEnabled,
+        stopTime: document.getElementById("stopTimeInput").value || "18:00",
+        windowEnabled,
+        windowStart: document.getElementById("windowStartInput").value || "09:00",
+        windowEnd: document.getElementById("windowEndInput").value || "18:00"
+      };
+    }
+
+    function applyScheduleFromSettings(schedule) {
+      if (!schedule) return;
+
+      document.getElementById("durationEnabled").checked = Boolean(schedule.durationEnabled);
+      document.getElementById("stopTimeEnabled").checked = Boolean(schedule.stopTimeEnabled);
+      document.getElementById("windowEnabled").checked = Boolean(schedule.windowEnabled);
+
+      const parts = minutesToHoursMinutes(schedule.durationMinutes || 120);
+      document.getElementById("durationHours").value = String(parts.hours);
+      document.getElementById("durationMinutesInput").value = String(parts.minutes);
+      document.getElementById("stopTimeInput").value = schedule.stopTime || "18:00";
+      document.getElementById("windowStartInput").value = schedule.windowStart || "09:00";
+      document.getElementById("windowEndInput").value = schedule.windowEnd || "18:00";
+      onScheduleToggle(false);
+    }
+
+    function onScheduleToggle(shouldSync = true) {
+      document.getElementById("durationFields").classList.toggle(
+        "disabled",
+        !document.getElementById("durationEnabled").checked
+      );
+      document.getElementById("stopTimeFields").classList.toggle(
+        "disabled",
+        !document.getElementById("stopTimeEnabled").checked
+      );
+      document.getElementById("windowFields").classList.toggle(
+        "disabled",
+        !document.getElementById("windowEnabled").checked
+      );
+
+      if (shouldSync) {
+        syncSettingsToMain();
+      }
+    }
+
+    function setSchedulePanelExpanded(expanded) {
+      const card = document.getElementById("scheduleCard");
+      const trigger = document.getElementById("scheduleCollapseTrigger");
+      if (!card || !trigger) return;
+
+      card.classList.toggle("collapsed", !expanded);
+      trigger.setAttribute("aria-expanded", String(expanded));
+      trigger.setAttribute("data-i18n-aria", expanded ? "scheduleCollapse" : "scheduleExpand");
+      trigger.setAttribute("aria-label", t(expanded ? "scheduleCollapse" : "scheduleExpand"));
+      localStorage.setItem("roboMouse.scheduleExpanded", String(expanded));
+    }
+
+    function toggleSchedulePanel() {
+      const card = document.getElementById("scheduleCard");
+      const isCollapsed = card.classList.contains("collapsed");
+      setSchedulePanelExpanded(isCollapsed);
+    }
+
+    function initSchedulePanel() {
+      const stored = localStorage.getItem("roboMouse.scheduleExpanded");
+      const expanded = stored === null ? false : stored === "true";
+      setSchedulePanelExpanded(expanded);
+    }
+
+    function formatCountdown(ms) {
+      if (!Number.isFinite(ms) || ms <= 0) {
+        return "00:00";
+      }
+
+      const totalSeconds = Math.floor(ms / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (hours > 0) {
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    function updateScheduleCountdown(data) {
+      const el = document.getElementById("scheduleCountdown");
+      const schedule = data?.schedule || getScheduleFromUI();
+      const hasSchedule =
+        schedule.durationEnabled || schedule.stopTimeEnabled || schedule.windowEnabled;
+
+      if (!botRunning) {
+        el.className = "schedule-countdown idle-hint";
+        el.textContent = hasSchedule ? t("scheduleCountdownIdle") : "";
+        return;
+      }
+
+      if (data?.nextStopInMs != null && hasSchedule) {
+        el.className = "schedule-countdown";
+        el.textContent = `${t("scheduleCountdown")} ${formatCountdown(data.nextStopInMs)}`;
+        return;
+      }
+
+      el.className = "schedule-countdown idle-hint";
+      el.textContent = hasSchedule ? t("scheduleCountdownIdle") : "";
+    }
+
+    function translateStopReason(data) {
+      if (!data?.reason) return null;
+      const map = {
+        "schedule-duration": "scheduleStoppedDuration",
+        "schedule-time": "scheduleStoppedTime",
+        "schedule-window": "scheduleStoppedWindow"
+      };
+      const key = map[data.reason];
+      return key ? t(key) : null;
     }
 
     function setPermissionBannerState(state) {
@@ -1312,6 +2113,7 @@
       { id: "wait-click", duration: 2800, captionKey: "helpPhaseWaitClick" },
       { id: "move-left", duration: 2800, captionKey: "helpPhaseMoveLeft" },
       { id: "loop", duration: 3000, captionKey: "helpPhaseLoop" },
+      { id: "schedule", duration: 3200, captionKey: "helpPhaseSchedule" },
       { id: "stop", duration: 3000, captionKey: "helpPhaseStop" }
     ];
 
@@ -1322,6 +2124,7 @@
       "wait-click": 2400,
       "move-left": 2600,
       loop: 1500,
+      schedule: 1500,
       stop: 1200
     };
 
@@ -1427,9 +2230,170 @@
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
+        if (document.getElementById("settingsSheet").classList.contains("open")) {
+          closeSettingsSheet();
+          return;
+        }
         closeHelpModal();
       }
     });
+
+    function openSettingsSheet() {
+      const sheet = document.getElementById("settingsSheet");
+      sheet.classList.add("open");
+      sheet.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSettingsSheet() {
+      const sheet = document.getElementById("settingsSheet");
+      sheet.classList.remove("open");
+      sheet.setAttribute("aria-hidden", "true");
+    }
+
+    function getSmartFromUI() {
+      return {
+        idleEnabled: document.getElementById("idleEnabled").checked,
+        idleThresholdMinutes,
+        meetingEnabled: document.getElementById("meetingEnabled").checked,
+        presentationMode: document.getElementById("presentationMode").checked
+      };
+    }
+
+    function getHotkeyFromUI() {
+      return {
+        enabled: document.getElementById("hotkeyEnabled").checked,
+        accelerator: "CommandOrControl+Shift+M"
+      };
+    }
+
+    function applySmartFromSettings(smart) {
+      if (!smart) return;
+
+      document.getElementById("idleEnabled").checked = Boolean(smart.idleEnabled);
+      document.getElementById("meetingEnabled").checked = Boolean(smart.meetingEnabled);
+      document.getElementById("presentationMode").checked = Boolean(smart.presentationMode);
+
+      const threshold = [1, 3, 5, 10, 15].includes(smart.idleThresholdMinutes)
+        ? smart.idleThresholdMinutes
+        : 3;
+      idleThresholdMinutes = threshold;
+      document.querySelectorAll("#idleChips .chip-btn").forEach(btn => {
+        btn.classList.toggle("selected", parseInt(btn.dataset.minutes, 10) === threshold);
+      });
+
+      onSmartToggle(false);
+    }
+
+    function applyHotkeyFromSettings(hotkey) {
+      if (!hotkey) return;
+      document.getElementById("hotkeyEnabled").checked = Boolean(hotkey.enabled);
+      updateHotkeyAcceleratorDisplay();
+    }
+
+    function updateHotkeyAcceleratorDisplay() {
+      const el = document.getElementById("hotkeyAccelerator");
+      const enabled = document.getElementById("hotkeyEnabled").checked;
+      el.classList.toggle("disabled", !enabled);
+    }
+
+    function updateIdleThresholdLock() {
+      const enabled = document.getElementById("idleEnabled").checked;
+      document.getElementById("idleThresholdGroup").classList.toggle("disabled", !enabled);
+    }
+
+    function selectIdleThreshold(minutes) {
+      idleThresholdMinutes = minutes;
+      document.querySelectorAll("#idleChips .chip-btn").forEach(btn => {
+        btn.classList.toggle("selected", parseInt(btn.dataset.minutes, 10) === minutes);
+      });
+      syncSettingsToMain();
+    }
+
+    function onSmartToggle(shouldSync = true) {
+      updateIdleThresholdLock();
+      updateHotkeyAcceleratorDisplay();
+      if (shouldSync) {
+        syncSettingsToMain();
+      }
+    }
+
+    function formatIdleRemaining(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function updateSmartHint(data) {
+      const el = document.getElementById("smartHint");
+      const indicator = document.getElementById("statusIndicator");
+      if (!el || !data) return;
+
+      if (!data || !botRunning) {
+        el.textContent = "";
+        if (indicator) indicator.classList.remove("waiting");
+        return;
+      }
+
+      const smart = data.smart || getSmartFromUI();
+      const anySmartEnabled =
+        smart.idleEnabled || smart.meetingEnabled || smart.presentationMode;
+
+      if (!anySmartEnabled) {
+        el.textContent = "";
+        indicator.classList.remove("waiting");
+        return;
+      }
+
+      if (!data.automationPaused || !data.pauseReason) {
+        el.textContent = "";
+        indicator.classList.remove("waiting");
+        return;
+      }
+
+      indicator.classList.add("waiting");
+
+      if (data.pauseReason === "idle" && data.idleRemainingSeconds != null) {
+        el.textContent = `${t("statusWaitingIdle")} (${formatIdleRemaining(data.idleRemainingSeconds)} ${t("smartHintIdleRemaining")})`;
+        return;
+      }
+
+      if (data.pauseReason === "meeting") {
+        el.textContent = t("statusPausedMeeting");
+        return;
+      }
+
+      if (data.pauseReason === "presentation") {
+        el.textContent = t("statusPausedPresentation");
+      }
+    }
+
+    function updateStatusFromSmart(data) {
+      automationPaused = Boolean(data?.automationPaused);
+      pauseReason = data?.pauseReason || null;
+      updateSmartHint(data);
+
+      const statusIndicator = document.getElementById("statusIndicator");
+      const statusText = document.getElementById("statusText");
+
+      if (!botRunning) {
+        statusIndicator.classList.remove("waiting");
+        statusText.textContent = t("statusInactive");
+        return;
+      }
+
+      if (automationPaused && pauseReason) {
+        statusText.textContent =
+          pauseReason === "idle"
+            ? t("statusWaitingIdle")
+            : pauseReason === "meeting"
+              ? t("statusPausedMeeting")
+              : t("statusPausedPresentation");
+        return;
+      }
+
+      statusIndicator.classList.remove("waiting");
+      statusText.textContent = t("statusActive");
+    }
 
     function stepInput(inputId, direction) {
       const input = document.getElementById(inputId);
@@ -1460,10 +2424,15 @@
 
       if (isActive) {
         statusIndicator.classList.add("active");
-        statusText.textContent = t("statusActive");
+        if (!automationPaused) {
+          statusIndicator.classList.remove("waiting");
+          statusText.textContent = t("statusActive");
+        }
       } else {
         statusIndicator.classList.remove("active");
+        statusIndicator.classList.remove("waiting");
         statusText.textContent = t("statusInactive");
+        document.getElementById("smartHint").textContent = "";
       }
     }
 
@@ -1473,6 +2442,7 @@
       if (statusIntervalId) clearInterval(statusIntervalId);
       statusIntervalId = setInterval(updateStatusTimer, 1000);
       setStatusActive(true);
+      setBotRunning(true);
     }
 
     function stopStatusTimer() {
@@ -1481,8 +2451,13 @@
         statusIntervalId = null;
       }
       statusStartTime = null;
+      automationPaused = false;
+      pauseReason = null;
       document.getElementById("statusTimer").textContent = "00:00";
       setStatusActive(false);
+      setBotRunning(false);
+      updateScheduleCountdown(null);
+      updateSmartHint(null);
     }
 
     function start() {
@@ -1495,11 +2470,20 @@
       const intervalSeconds = parseFloat(document.getElementById("intervalInput").value);
       const safeDistance = Number.isFinite(distancePx) && distancePx > 0 ? distancePx : 5;
       const safeInterval = Number.isFinite(intervalSeconds) && intervalSeconds > 0 ? intervalSeconds : 5;
-      window.api.start(safeDistance, safeInterval);
+      window.api.start(safeDistance, safeInterval, getScheduleFromUI(), getSmartFromUI(), getHotkeyFromUI());
     }
 
     function stop() {
+      const stopBtn = document.getElementById("stopBtn");
+      stopBtn.disabled = true;
+      stopBtn.textContent = t("btnStopping");
       window.api.stop();
+    }
+
+    function resetStopButtonLabel() {
+      const stopBtn = document.getElementById("stopBtn");
+      stopBtn.textContent = t("btnStop");
+      updateActionButtons();
     }
 
     function syncSettingsToMain() {
@@ -1507,7 +2491,13 @@
       const intervalSeconds = parseFloat(document.getElementById("intervalInput").value);
       const safeDistance = Number.isFinite(distancePx) && distancePx > 0 ? distancePx : 5;
       const safeInterval = Number.isFinite(intervalSeconds) && intervalSeconds > 0 ? intervalSeconds : 5;
-      window.api.syncSettings(safeDistance, safeInterval);
+      window.api.syncSettings(
+        safeDistance,
+        safeInterval,
+        getScheduleFromUI(),
+        getSmartFromUI(),
+        getHotkeyFromUI()
+      );
     }
 
     function applySettingsFromMain(data) {
@@ -1518,18 +2508,46 @@
       if (Number.isFinite(data.intervalSeconds) && data.intervalSeconds > 0) {
         document.getElementById("intervalInput").value = String(data.intervalSeconds);
       }
+      applyScheduleFromSettings(data.schedule);
+      applySmartFromSettings(data.smart);
+      applyHotkeyFromSettings(data.hotkey);
     }
 
-    window.api.onBotStarted(() => startStatusTimer());
-    window.api.onBotStopped(() => stopStatusTimer());
+    window.api.onBotStarted((data) => {
+      if (data?.schedule) {
+        applyScheduleFromSettings(data.schedule);
+      }
+      if (data?.smart) {
+        applySmartFromSettings(data.smart);
+      }
+      startStatusTimer();
+      resetStopButtonLabel();
+    });
+    window.api.onBotStopped((data) => {
+      stopStatusTimer();
+      resetStopButtonLabel();
+      const message = translateStopReason(data);
+      if (message) {
+        alert(message);
+      }
+    });
     window.api.onSettingsUpdated(applySettingsFromMain);
+    window.api.onScheduleTick((data) => updateScheduleCountdown(data));
+    window.api.onSmartStateChanged((data) => updateStatusFromSmart(data));
+    window.api.onOpenSettings(() => openSettingsSheet());
+    window.api.onHotkeyRegisterFailed(() => {
+      alert(t("hotkeyRegisterFailed"));
+      applyHotkeyFromSettings({ enabled: false });
+    });
     window.api.onBotStartFailed((data) => {
       stopStatusTimer();
+      resetStopButtonLabel();
       alert(translateError(data));
       refreshPermissionBanner();
     });
     window.api.onBotError((data) => {
       stopStatusTimer();
+      resetStopButtonLabel();
       alert(translateError(data));
       refreshPermissionBanner();
     });
@@ -1541,6 +2559,26 @@
     window.api.setMenuLanguage(currentLang);
     document.getElementById("distanceInput").addEventListener("change", syncSettingsToMain);
     document.getElementById("intervalInput").addEventListener("change", syncSettingsToMain);
+    [
+      "durationEnabled",
+      "stopTimeEnabled",
+      "windowEnabled",
+      "durationHours",
+      "durationMinutesInput",
+      "stopTimeInput",
+      "windowStartInput",
+      "windowEndInput"
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("change", syncSettingsToMain);
+      el.addEventListener("input", syncSettingsToMain);
+    });
+
+    window.api.getSettings().then(applySettingsFromMain).catch(() => {});
+    initSchedulePanel();
+    onScheduleToggle(false);
+    onSmartToggle(false);
+    updateActionButtons();
     syncSettingsToMain();
     refreshPermissionBanner();
   </script>

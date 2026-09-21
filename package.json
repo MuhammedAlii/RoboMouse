@@ -1,6 +1,6 @@
 {
   "name": "roboMouse",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "main": "roboMouse.js",
   "bin": "roboMouse.js",
   "scripts": {
@@ -108,7 +108,8 @@
   "license": "ISC",
   "dependencies": {
     "@nut-tree-fork/node-mac-permissions": "2.2.1",
-    "@nut-tree-fork/nut-js": "^4.2.6"
+    "@nut-tree-fork/nut-js": "^4.2.6",
+    "active-win": "^8.2.1"
   },
   "devDependencies": {
     "electron": "^40.4.1",

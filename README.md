@@ -6,7 +6,7 @@ roboMouse is a lightweight desktop utility built with Electron and [nut-js](http
 
 | | |
 |---|---|
-| **Version** | 1.0.2 |
+| **Version** | 1.2.0 |
 | **License** | ISC |
 | **Platforms** | macOS 12+, Windows x64, Linux x64 |
 | **Languages** | Türkçe · English · Deutsch · Русский |
@@ -22,26 +22,37 @@ Pre-built binaries are on the [**Releases**](https://github.com/MuhammedAlii/Rob
 
 | Platform | File | Notes |
 |----------|------|-------|
-| **macOS** (Apple Silicon) | `roboMouse-1.0.2-arm64.dmg` | Drag to Applications |
-| **Windows** | `roboMouse-1.0.2-portable-x64.exe` | Portable — double-click to run |
-| **Windows** | `roboMouse-1.0.2-win-x64.zip` | Extract folder → run `roboMouse.exe` |
-| **Linux** | `roboMouse-1.0.2.AppImage` | `chmod +x` then run |
-| **Linux** | `roboMouse_1.0.2_amd64.deb` | `sudo dpkg -i …` |
-
-> **macOS only:** menu bar tray icon, context menu, and active-state badge.  
-> Windows and Linux builds use the in-app control panel.
+| **macOS** (Apple Silicon) | `roboMouse-1.2.0-arm64.dmg` | Drag to Applications |
+| **Windows** | `roboMouse-1.2.0-portable-x64.exe` | Portable — double-click to run |
+| **Windows** | `roboMouse-1.2.0-win-x64.zip` | Extract folder → run `roboMouse.exe` |
+| **Linux** | `roboMouse-1.2.0.AppImage` | `chmod +x` then run |
+| **Linux** | `roboMouse_1.2.0_amd64.deb` | `sudo dpkg -i …` |
 
 ---
 
 ## ✨ Features
 
+### Core (v1.1)
+
+- **Auto-stop scheduling** — duration limit, daily stop time (e.g. 18:00), or working window (e.g. 09:00–18:00)
+- **Instant stop** — panel and tray stop respond immediately
 - **Automated loop** — move right → wait → left click → move back → repeat
 - **Configurable settings** — movement distance (px) and loop interval (seconds)
-- **macOS menu bar tray** — start/stop, distance & interval presets, open panel, quit
-- **Active indicator** — green badge on the tray icon while running
 - **Permission-aware UX** — start is disabled until mouse control is verified (macOS Accessibility)
 - **In-app help** — animated walkthrough with optional voice guidance
-- **Background operation** — closing the window keeps the app running in the tray *(macOS)*
+
+### Smart Control (v1.2) — all opt-in, off by default
+
+| Feature | Description |
+|---------|-------------|
+| **Smart Idle** | Only jiggles the mouse after you have been idle for a set threshold (1–15 min) |
+| **Meeting Safe** | Pauses when Zoom, Teams, Webex, or browser Meet is in the foreground |
+| **Presentation mode** | Manual toggle — always pause automation |
+| **Global hotkey** | `Cmd+Shift+M` / `Ctrl+Shift+M` toggles start/stop (enable in Settings) |
+| **System tray** | macOS, Windows, and Linux — start/stop, presets, presentation mode, settings |
+| **Settings sheet** | Clean main panel; schedule + smart modes live in the gear menu |
+
+> Until you enable smart modes in **Settings**, the app behaves like v1.1 (immediate movement on Start).
 
 ---
 
@@ -51,12 +62,30 @@ Pre-built binaries are on the [**Releases**](https://github.com/MuhammedAlii/Rob
 Start → wait (interval) → move right → wait → left click → move left → repeat
 ```
 
+With **Smart Idle** enabled:
+
+```
+Start → session active → wait until idle threshold → then loop as above
+```
+
 | Setting | Description | Default |
 |---------|-------------|---------|
 | Mouse distance | Horizontal movement per step | 5 px |
 | Loop interval | Pause between steps | 5 s |
+| Smart Idle | Run only when user is idle | Off |
+| Meeting pause | Pause in meeting apps | Off |
+| Global hotkey | Toggle session | Off |
 
-Tray presets *(macOS)*: distance **5 / 10 / 15 / 20 px**, interval **5 / 10 / 30 s**.
+Tray presets: distance **5 / 10 / 15 / 20 px**, interval **5 / 10 / 30 s**.
+
+---
+
+## ⌨️ Shortcuts
+
+| Shortcut | Action | Default |
+|----------|--------|---------|
+| `Cmd+Shift+M` (macOS) | Toggle start/stop | Off — enable in Settings |
+| `Ctrl+Shift+M` (Win/Linux) | Toggle start/stop | Off — enable in Settings |
 
 ---
 
@@ -75,7 +104,7 @@ If macOS blocks the app (unsigned build): **Right-click → Open**.
 ### 🪟 Windows
 
 1. Open [Releases](https://github.com/MuhammedAlii/RoboMouse/releases) → **Assets**.
-2. Download **`roboMouse-1.0.2-portable-x64.exe`** *(recommended)* **or** **`roboMouse-1.0.2-win-x64.zip`**.
+2. Download **`roboMouse-1.2.0-portable-x64.exe`** *(recommended)* **or** **`roboMouse-1.2.0-win-x64.zip`**.
 3. **Portable:** double-click the `.exe`.
 4. **Zip:** extract the archive → open the folder → run **`roboMouse.exe`**.
 
@@ -86,14 +115,14 @@ Windows SmartScreen may warn on unsigned builds — **More info → Run anyway**
 **AppImage**
 
 ```bash
-chmod +x roboMouse-1.0.2.AppImage
-./roboMouse-1.0.2.AppImage
+chmod +x roboMouse-1.2.0.AppImage
+./roboMouse-1.2.0.AppImage
 ```
 
 **Debian / Ubuntu**
 
 ```bash
-sudo dpkg -i roboMouse_1.0.2_amd64.deb
+sudo dpkg -i roboMouse_1.2.0_amd64.deb
 ```
 
 Depending on your desktop environment, additional input permissions may be required.
@@ -128,7 +157,7 @@ npm start
 
 | Command | Output |
 |---------|--------|
-| `npm run build:mac:local` | `dist/roboMouse-1.0.2-arm64.dmg` |
+| `npm run build:mac:local` | `dist/roboMouse-1.2.0-arm64.dmg` |
 | `npm run build:win:local` | Portable `.exe` + `.zip` |
 | `npm run build:linux:local` | AppImage + `.deb` |
 | `npm run build:all:local` | All platforms |
@@ -141,13 +170,14 @@ npm start
 
 ```
 roboMouse/
-├── roboMouse.js       # Main process, automation & tray
-├── index.html         # UI
-├── preload.js         # IPC bridge
-├── i18n.js            # UI translations
-├── tray-i18n.js       # Tray menu translations
-├── build/             # Icons & macOS entitlements
-└── scripts/           # Asset generation
+├── roboMouse.js         # Main process, automation, tray & hotkey
+├── smart-detection.js   # Idle/meeting detection helpers
+├── index.html           # UI + settings sheet
+├── preload.js           # IPC bridge
+├── i18n.js              # UI translations
+├── tray-i18n.js         # Tray menu translations
+├── build/               # Icons & macOS entitlements
+└── scripts/             # Asset generation
 ```
 
 ---
@@ -157,6 +187,7 @@ roboMouse/
 - [Electron](https://www.electronjs.org/) 40
 - [@nut-tree-fork/nut-js](https://www.npmjs.com/package/@nut-tree-fork/nut-js)
 - [@nut-tree-fork/node-mac-permissions](https://www.npmjs.com/package/@nut-tree-fork/node-mac-permissions)
+- [active-win](https://www.npmjs.com/package/active-win) — foreground window detection
 - [electron-builder](https://www.electron.build/)
 
 ---
