@@ -22,11 +22,11 @@ Pre-built binaries are on the [**Releases**](https://github.com/MuhammedAlii/Rob
 
 | Platform | File | Notes |
 |----------|------|-------|
-| **macOS** (Apple Silicon) | `roboMouse-1.2.0-arm64.dmg` | Drag to Applications |
+| **macOS** (Apple Silicon) | `roboMouse-1.2.0-mac-arm64.dmg` | Drag to Applications |
 | **Windows** | `roboMouse-1.2.0-portable-x64.exe` | Portable — double-click to run |
 | **Windows** | `roboMouse-1.2.0-win-x64.zip` | Extract folder → run `roboMouse.exe` |
-| **Linux** | `roboMouse-1.2.0.AppImage` | `chmod +x` then run |
-| **Linux** | `roboMouse_1.2.0_amd64.deb` | `sudo dpkg -i …` |
+| **Linux** | `roboMouse-1.2.0-linux-x86_64.AppImage` | `chmod +x` then run |
+| **Linux** | `roboMouse-1.2.0-linux-amd64.deb` | `sudo dpkg -i …` |
 
 ---
 
@@ -115,14 +115,14 @@ Windows SmartScreen may warn on unsigned builds — **More info → Run anyway**
 **AppImage**
 
 ```bash
-chmod +x roboMouse-1.2.0.AppImage
-./roboMouse-1.2.0.AppImage
+chmod +x roboMouse-1.2.0-linux-x86_64.AppImage
+./roboMouse-1.2.0-linux-x86_64.AppImage
 ```
 
 **Debian / Ubuntu**
 
 ```bash
-sudo dpkg -i roboMouse_1.2.0_amd64.deb
+sudo dpkg -i roboMouse-1.2.0-linux-amd64.deb
 ```
 
 Depending on your desktop environment, additional input permissions may be required.
@@ -157,7 +157,7 @@ npm start
 
 | Command | Output |
 |---------|--------|
-| `npm run build:mac:local` | `dist/roboMouse-1.2.0-arm64.dmg` |
+| `npm run build:mac:local` | `dist/roboMouse-1.2.0-mac-arm64.dmg` |
 | `npm run build:win:local` | Portable `.exe` + `.zip` |
 | `npm run build:linux:local` | AppImage + `.deb` |
 | `npm run build:all:local` | All platforms |
